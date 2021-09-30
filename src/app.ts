@@ -6,7 +6,8 @@ import { GUI } from 'three/examples/jsm/libs/dat.gui.module'
 const pi = 3.1415926
 const scale = 0.1
 const materialArray = [
-    new THREE.MeshStandardMaterial({ color: 0xffffff}), 
+    //MeshStandardMaterial
+    new THREE.MeshPhongMaterial({ color: 0xffffff}), 
     new THREE.MeshStandardMaterial({ color: 0x000000}),
     new THREE.MeshPhongMaterial({
         color: 0xffffff, 
@@ -76,24 +77,33 @@ class Drawing extends DrawingCommon {
 
     createProtagonist(gui?: GUI): THREE.Group {
         const group = new THREE.Group();
-        //[top, bottom, height, radialSeg, x, y, z, rotateX, Y, Z]
+        
+        //[top, bottom, height, radialSeg, x, y, z, rotateX, Y, Z, material]
         const cylinderDims: number[][] = [
-            [2,2,4,10,      0,8.4,0,    0,0,0], //neck
-            [5,10,4,6,      0,6,0,0,    0,0,0], //body top
-            [10,6,6,6,      0,1,0,      0,0,0], // body bottom
-            [1.5,1,20,4,    -5,-5,0,    -pi/8,0,pi/8], // wheelL
-            [1.5,1,20,4,    5,-5,0,     -pi/8,0,-pi/8], //wheelR
-            [1.5,1,10,4,    10.6,3.6,-4.4,      -2.1,-0.5,-1.3], //armL1
-            [1.5,1,10,4,    -10.6,3.6,-4.4,     -2.1,0.5,1.3], //armR1
-            [3,1.5,10,4,    14.6,7.5,-10,       -1,0,0],
-            [3,1.5,10,4,    -14.6,7.5,-10,       -1,0,0],
-            // [5,5,10,16,0,0,0],
-            // [5,5,10,16,0,0,0],
+            [2,2,4,10,      0,8.4,0,    0,0,0,0], //neck
+            [5,10,4,6,      0,6,0,0,    0,0,0,0], //body top
+            [10,6,8,6,      0,0,0,      0,0,0,0], // body bottom
+            [1.5,1,23,4,    -5,-7.4,1.3,    -pi/8,0, 0.3,0], // legL
+            [1.5,1,23,4,    5,-7.4,1.3,     -pi/8,0, -0.3,0], //legR
+            [1,1,3,8,       0,-17,5,        0,0,pi/2,0], //legJoint
+            
+            [1.5,1,10,4,    10.6,3.6,-4.4,      -2.1,-0.5,-1.3,0], //armL1
+            [1.5,1,10,4,    -10.6,3.6,-4.4,     -2.1,0.5,1.3,0], //armR1
+            [3,1.5,10,4,    14.6,7.5,-10,       -1,0,0,0], //armL2
+            [3,1.5,10,4,    -14.6,7.5,-10,       -1,0,0,0], //armR2
+
+            [0.5,0.5,5,4,       4,20,-8.9,     0,-0.5,-1.4,1], //eyebrowL
+            [0.5,0.5,5,4,       -4,20,-8.9,    0,0.4,1.4,1], //eyebrowR
+            
+            [2,2,3,6,       8.5,3.5,-3.4,     pi/2,0,1.3,1], //screw_armL1
+            [2,2,3,6,       -8.5,3.5,-3.4,     pi/2,0,-1.3,1], //screw_armR1
+            [2.5,2.5,2,6,       14.5,5.5,-6.4,     2,0.4,0.4,1], //screw_armL2
+            [2.5,2.5,2,6,       -14.5,5.5,-6.4,    2,0.4,0.4,1], //screw_armR2
         ]
         for (let i = 0; i < cylinderDims.length; i ++) {
             const curr: number[] = cylinderDims[i]
             const geo = new THREE.CylinderGeometry(curr[0], curr[1], curr[2], curr[3])
-            const mesh = new THREE.Mesh(geo, materialArray[0])
+            const mesh = new THREE.Mesh(geo, materialArray[curr[10]])
 
             mesh.position.set(curr[4],curr[5],curr[6])
             mesh.rotateX(curr[7])
@@ -104,9 +114,9 @@ class Drawing extends DrawingCommon {
 
             // GUI
             const x = gui.addFolder('cylinder' + i)
-            x.add(mesh.position, 'x').min(-20).max(20).step(0.1)
-            x.add(mesh.position, 'y').min(-20).max(20).step(0.1)
-            x.add(mesh.position, 'z').min(-20).max(20).step(0.1)
+            x.add(mesh.position, 'x').min(-20).max(25).step(0.1)
+            x.add(mesh.position, 'y').min(-20).max(25).step(0.1)
+            x.add(mesh.position, 'z').min(-20).max(25).step(0.1)
             x.add(mesh.rotation, 'x').min(-pi).max(pi).step(0.1)
             x.add(mesh.rotation, 'y').min(-pi).max(pi).step(0.1)
             x.add(mesh.rotation, 'z').min(-pi).max(pi).step(0.1)
@@ -118,31 +128,37 @@ class Drawing extends DrawingCommon {
                 .onChange( function() {mesh.material.color.set(params.color ); } );
         }
 
-        //head
-        const tetra = new THREE.TetrahedronGeometry(10,3) //radius, seg
-        const body = new THREE.Mesh(tetra, materialArray[2])
-        body.position.set(0,18,0);
-        group.add(body)
+        
+        //********* head *********
+        // skull
+        const headGroup = new THREE.Group();
+        const tetra = new THREE.TetrahedronGeometry(10,6) //radius, seg
+        const skull = new THREE.Mesh(tetra, materialArray[0])
+        skull.position.set(0,18,0);
 
-        const x = gui.addFolder('tetra')
-        x.add(body.position, 'x').min(-20).max(20).step(0.1)
-        x.add(body.position, 'y').min(-20).max(20).step(0.1)
-        x.add(body.position, 'z').min(-20).max(20).step(0.1)
-
+        const h = gui.addFolder('head')
+        const x = h.addFolder('skull')
+        x.add(skull.position, 'x').min(-20).max(20).step(0.1)
+        x.add(skull.position, 'y').min(-20).max(20).step(0.1)
+        x.add(skull.position, 'z').min(-20).max(20).step(0.1)
 
         //Two eyes
-        const eye = new THREE.SphereGeometry(2, 16, 10) //radius, seg
+        const eye = new THREE.SphereGeometry(2, 8, 6) //radius, seg
         const eyeL = new THREE.Mesh(eye, materialArray[0])
-        eyeL.position.set(4,20,-8);
+        eyeL.position.set(4,17,-9);
         
         const eyeR = eyeL.clone()
-        eyeR.position.set(-4,20,-8);
-        group.add(eyeL, eyeR)
+        eyeR.position.set(-4,17,-9);
+        
+        headGroup.add(skull, eyeL, eyeR)
+        group.add(headGroup)
+        //********* End of head *********
 
         //wheel 
-        const torus = new THREE.TorusGeometry(10,3,16,100) //radius, seg
+        const arr = [10,2.8,16,100]
+        const torus = new THREE.TorusGeometry(...arr) 
         const wheel = new THREE.Mesh(torus, materialArray[2])
-        wheel.position.set(0,-15,5);
+        wheel.position.set(0,-17,5);
         wheel.rotateY(pi/2)
         group.add(wheel)
 
@@ -153,7 +169,23 @@ class Drawing extends DrawingCommon {
 
         return group
     }
-//****************************************************************************---
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //****************************************************************************---
     createCylinderMeshes(dims: number[][], gui?: GUI): THREE.Group {
         const group = new THREE.Group();
         
