@@ -22,14 +22,13 @@ Here are the required elements for your main character:
 
 The three.js sample code includes a simple camera controller so that you can rotate the scene with the mouse;  you should size you object so that it fits in the area viewed by this camera.  If you want to create an object that is bigger or smaller than the area viewed around the origin of this sample scene, simply add a node above your object's root node, and apply a scale to make your object a different size.
 
-## Resources
-
-[three.js](https://threejs.org) graphics library
-base code: https://github.com/cs3451-f21/a2-a-object-modeling-vsantino720 from Gatech CS3451
+## Idea
+Empty parent + programmable 3D shapes to enable both local and global transformations
+Used normal texture 
+Used GUI from 'three/examples/jsm/libs/dat.gui.module' to visulize changes
 
 ## Result
-
-Please include a JPG or PNG image of your object as part of the files that you turn in.  Try to keep your image square in shape, and give the file your name (e.g. jane_doe.jpg).  0.2 out of 10 points for this project will be for you including this screen shot of your object.  Here is an example of such an image (although yours should be of your character):
+screen shot of the final result
 
 ![sample scene](Jiaxi_Xu.png)
 
@@ -39,4 +38,10 @@ Please include a JPG or PNG image of your object as part of the files that you t
 1. cd into the directory and run ```npm install```
 2. run with ```npm run dev```
 3. visit ```http://localhost:3000/index.html```
+
+## Resources
+
+[three.js](https://threejs.org) graphics library
+
+base code: https://github.com/cs3451-f21/a2-a-object-modeling-vsantino720 from Gatech CS3451
 
