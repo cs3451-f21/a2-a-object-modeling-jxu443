@@ -30,9 +30,9 @@ Used normal texture
 Used GUI from 'three/examples/jsm/libs/dat.gui.module' to visulize changes
 
 ## Result
-screen shot of the final result
+screen recordnig of the final result
 
-![sample scene](Jiaxi_Xu.png)
+![sample scene](a2a.gif)
 
 
 # Compile and Run
