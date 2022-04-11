@@ -7,11 +7,11 @@ import mkcert from'vite-plugin-mkcert'
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
-    https: true,
+    https: false,
 
-    hmr: {
-      port: 3000
-    }
+    // hmr: {
+    //   port: 3000
+    // }
   },
   base: './',
   publicPath: './',
