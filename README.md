@@ -24,7 +24,9 @@ The three.js sample code includes a simple camera controller so that you can rot
 
 ## Idea
 Empty parent + programmable 3D shapes to enable both local and global transformations
+
 Used normal texture 
+
 Used GUI from 'three/examples/jsm/libs/dat.gui.module' to visulize changes
 
 ## Result
